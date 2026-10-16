@@ -1,0 +1,222 @@
+[
+  {
+    "name": "carte",
+    "bbox": [
+      10,
+      10,
+      400,
+      340
+    ],
+    "kind": "Conteneur",
+    "text": null
+  },
+  {
+    "name": "titre",
+    "bbox": [
+      31,
+      30,
+      86,
+      14
+    ],
+    "kind": "Texte",
+    "text": "Connexion"
+  },
+  {
+    "name": "photo",
+    "bbox": [
+      330,
+      22,
+      60,
+      60
+    ],
+    "kind": "Image",
+    "text": null
+  },
+  {
+    "name": "label_email",
+    "bbox": [
+      30,
+      73,
+      31,
+      9
+    ],
+    "kind": "Texte",
+    "text": "Email"
+  },
+  {
+    "name": "champ_email",
+    "bbox": [
+      30,
+      88,
+      360,
+      37
+    ],
+    "kind": "Champ",
+    "text": null
+  },
+  {
+    "name": "placeholder_email",
+    "bbox": [
+      42,
+      102,
+      111,
+      12
+    ],
+    "kind": "Texte",
+    "text": "nom@exemple.com"
+  },
+  {
+    "name": "champ_recherche",
+    "bbox": [
+      30,
+      140,
+      360,
+      37
+    ],
+    "kind": "Champ",
+    "text": null
+  },
+  {
+    "name": "icone_loupe",
+    "bbox": [
+      42,
+      150,
+      18,
+      18
+    ],
+    "kind": "Icône",
+    "text": null
+  },
+  {
+    "name": "placeholder_recherche",
+    "bbox": [
+      66,
+      154,
+      72,
+      9
+    ],
+    "kind": "Texte",
+    "text": "Rechercher..."
+  },
+  {
+    "name": "bouton_principal",
+    "bbox": [
+      30,
+      196,
+      171,
+      41
+    ],
+    "kind": "Bouton",
+    "text": null
+  },
+  {
+    "name": "bouton_principal_texte",
+    "bbox": [
+      77,
+      212,
+      73,
+      9
+    ],
+    "kind": "Texte",
+    "text": "Se connecter"
+  },
+  {
+    "name": "bouton_secondaire",
+    "bbox": [
+      220,
+      196,
+      170,
+      41
+    ],
+    "kind": "Bouton",
+    "text": null
+  },
+  {
+    "name": "bouton_secondaire_texte",
+    "bbox": [
+      281,
+      212,
+      43,
+      9
+    ],
+    "kind": "Texte",
+    "text": "Annuler"
+  },
+  {
+    "name": "icone_lecture",
+    "bbox": [
+      32,
+      258,
+      21,
+      23
+    ],
+    "kind": "Icône",
+    "text": null
+  },
+  {
+    "name": "icone_rond",
+    "bbox": [
+      70,
+      258,
+      23,
+      23
+    ],
+    "kind": "Icône",
+    "text": null
+  },
+  {
+    "name": "icone_carre",
+    "bbox": [
+      110,
+      259,
+      21,
+      21
+    ],
+    "kind": "Icône",
+    "text": null
+  },
+  {
+    "name": "badge",
+    "bbox": [
+      300,
+      262,
+      71,
+      21
+    ],
+    "kind": "Composant",
+    "text": null
+  },
+  {
+    "name": "badge_texte",
+    "bbox": [
+      311,
+      269,
+      48,
+      9
+    ],
+    "kind": "Texte",
+    "text": "Nouveau"
+  },
+  {
+    "name": "lien",
+    "bbox": [
+      30,
+      303,
+      120,
+      12
+    ],
+    "kind": "Texte",
+    "text": "Mot de passe oublié ?"
+  },
+  {
+    "name": "barre",
+    "bbox": [
+      30,
+      330,
+      360,
+      9
+    ],
+    "kind": "Composant",
+    "text": null
+  }
+]

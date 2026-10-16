@@ -1,0 +1,57 @@
+# Paramètres de la chaîne image -> arbre. Toutes les distances sont en pixels.
+
+[detection]
+color_tol = 30              # écart de couleur (somme |ΔR|+|ΔG|+|ΔB|) au-delà duquel un pixel n'est plus du fond
+                            # (60 en v1 : trop haut pour un écran blanc sur fond bleu clair, écart ~61)
+surface_tol = 10            # seuil BAS pour les surfaces pâles (carte blanche sur fond gris clair : écart ~15-25)
+surface_open = 3            # nettoyage du masque des surfaces (supprime bruit JPEG et traits fins)
+card_min_side = 30          # carte de la couleur du fond, délimitée par une bordure / un espace : côté min.
+card_rect_fill = 0.9        # ... et forme quasi rectangulaire (exclut l'intérieur d'un avatar rond : 0.785)
+card_gap_close = 2          # trous bouchés dans les bordures pâles des cartes (px)
+merge_x = 12             # dilatation horizontale pour fusionner les lettres d'une ligne
+merge_y = 4                 # dilatation verticale
+min_area = 30               # boîtes plus petites ignorées (bruit)
+solid_fill = 0.75           # taux de remplissage à partir duquel une forme est "pleine" (badge, bouton, bandeau)
+min_solid_side = 14         # une forme pleine plus fine que ça est un trait / une lettre, pas un conteneur
+edge_margin = 2             # bord rogné à l'intérieur d'une forme pleine (anti-crénelage des coins)
+min_palette_ratio = 0.7     # on ne cherche DANS une forme que si ses 6 couleurs principales couvrent
+                            # au moins 70 % de ses pixels (interface : 0,80-0,97 ; photo : 0,39-0,53)
+max_depth = 4               # profondeur max de recherche dans les formes pleines imbriquées
+min_line_coverage = 0.5     # une ligne OCR n'est rattachée à des pixels que s'ils couvrent cette part
+                            # de sa largeur (sinon : boîte OCR telle quelle)
+
+[ocr]
+enabled = true
+min_score = 0.5             # lignes de confiance plus faible ignorées
+icon_max_chars = 1          # une ligne d'au plus 1 caractère...
+icon_max_aspect = 1.4       # ...dans une boîte presque carrée = icône probable (ex. "8" lu sur une icône partage)
+
+[classify]
+contain_overlap = 0.9       # A est dans B si au moins 90 % de A est recouvert par B
+icon_max_side = 48          # Icône : forme sans contenu, côté max...
+icon_max_aspect = 2.0       # ...et presque carrée (rapport des côtés max)
+photo_min_side = 20         # Image : côté min...
+photo_min_colors = 16       # ...au moins 16 couleurs (quantifiées par pas de 32)...
+photo_max_palette = 0.7     # ...et ses 6 couleurs principales couvrent moins de 70 % des pixels
+button_min_height = 24      # plus bas : badge / étiquette (Composant)
+button_max_height = 64      # plus haut : Conteneur
+button_max_chars = 30       # texte plus long : pas un bouton
+field_min_aspect = 3.0      # Champ : forme au moins 3x plus large que haute...
+field_text_start = 0.25     # ...texte qui commence dans le premier quart...
+centered_tol = 0.15         # ...et décalé à gauche du centre d'au moins 15 % de la largeur
+text_min_aspect = 2.5       # encre allongée, basse et peu remplie = texte non lu par l'OCR
+text_max_height = 40
+
+[xycut]
+twin_iou = 0.9              # enfant qui recouvre son parent à 90 % (IoU) : même élément, fusionné
+min_gap = 4                 # couloir vide minimum pour couper. XY-Cut travaille sur des éléments
+                            # déjà assemblés (lignes, boutons) : pas d'espaces entre lettres à éviter.
+                            # 8 en v1 : la ligne 1 de la maquette (badge à 6 px du texte) ne se coupait pas
+
+[similarity]
+min_descendants = 2         # composant répété : sous-arbre d'au moins 2 descendants, présent 2 fois ou plus
+max_height_ratio = 1.3      # occurrences d'un composant répété : hauteurs à 30 % près...
+max_width_ratio = 2.0       # ...largeurs à 2x près (le texte change la largeur)
+max_visual_distance = 8     # éléments visuellement identiques : au plus 8 bits différents sur 64 (dHash)
+max_size_ratio = 1.2        # ... et tailles à 20 % près...
+max_color_distance = 40     # ... et couleur de fond proche (|ΔR|+|ΔG|+|ΔB|) : le dHash ne voit pas la couleur

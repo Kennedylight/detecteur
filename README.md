@@ -39,4 +39,5 @@ Les paramètres sont dans `config.toml` (un nom de paramètre inconnu y est refu
 | Point d'entrée commun (interface, batch, évaluation) | `analysis.py` |
 
 Licences des dépendances : voir `LICENCES.md`.
-# detecteur
+
+Historique détaillé de tout le travail (décisions, mesures, bugs, limites) : `HISTORIQUE_DETAILLE.md`.

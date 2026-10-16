@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "uitree/tree.schema.json",
+  "title": "Arbre hiérarchique d'une maquette d'interface",
+  "type": "object",
+  "required": ["schema_version", "image", "root", "repeated_components", "visual_duplicates"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "image": {
+      "type": "object",
+      "required": ["file", "width", "height"],
+      "additionalProperties": false,
+      "properties": {
+        "file": {"type": "string"},
+        "width": {"type": "integer", "minimum": 1},
+        "height": {"type": "integer", "minimum": 1}
+      }
+    },
+    "root": {"$ref": "#/$defs/node"},
+    "repeated_components": {
+      "description": "Sous-arbres de même structure (même composant, contenu différent).",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["structure_hash", "node_ids", "max_visual_distance"],
+        "additionalProperties": false,
+        "properties": {
+          "structure_hash": {"type": "string", "pattern": "^[0-9a-f]{12}$"},
+          "node_ids": {"type": "array", "items": {"type": "integer"}, "minItems": 2},
+          "max_visual_distance": {"type": "integer", "minimum": 0, "maximum": 64}
+        }
+      }
+    },
+    "visual_duplicates": {
+      "description": "Éléments visuellement identiques (même icône, même bouton).",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["node_ids"],
+        "additionalProperties": false,
+        "properties": {"node_ids": {"type": "array", "items": {"type": "integer"}, "minItems": 2}}
+      }
+    }
+  },
+  "$defs": {
+    "color": {"type": "string", "pattern": "^#[0-9a-f]{6}$"},
+    "node": {
+      "type": "object",
+      "required": ["id", "bbox", "type", "geo_type", "source", "parent", "children", "text", "style",
+                   "label", "score", "hashes"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"type": "integer", "minimum": 0},
+        "bbox": {
+          "type": "object",
+          "required": ["x", "y", "width", "height"],
+          "additionalProperties": false,
+          "properties": {
+            "x": {"type": "integer", "minimum": 0},
+            "y": {"type": "integer", "minimum": 0},
+            "width": {"type": "integer", "minimum": 1},
+            "height": {"type": "integer", "minimum": 1}
+          }
+        },
+        "type": {
+          "description": "Type grossier ; null pour la page et les regroupements XY-Cut.",
+          "enum": ["Texte", "Image", "Icône", "Bouton", "Champ", "Composant", "Conteneur", null]
+        },
+        "geo_type": {"enum": ["Feuille", "Row", "Column", "Groupe"]},
+        "source": {"enum": ["page", "detection", "xycut"]},
+        "parent": {"type": ["integer", "null"]},
+        "children": {"type": "array", "items": {"$ref": "#/$defs/node"}},
+        "text": {"type": ["string", "null"]},
+        "style": {
+          "oneOf": [
+            {"type": "null"},
+            {
+              "type": "object",
+              "required": ["background", "text_color", "text_height_px"],
+              "additionalProperties": false,
+              "properties": {
+                "background": {"$ref": "#/$defs/color"},
+                "text_color": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/color"}]},
+                "text_height_px": {"type": ["integer", "null"], "minimum": 1}
+              }
+            }
+          ]
+        },
+        "label": {
+          "description": "Étiquette sémantique, remplie plus tard par le MLLM (qui ne touche jamais aux positions).",
+          "type": ["string", "null"]
+        },
+        "score": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+        "hashes": {
+          "type": "object",
+          "required": ["structure", "visual"],
+          "additionalProperties": false,
+          "properties": {
+            "structure": {"type": "string", "pattern": "^[0-9a-f]{12}$"},
+            "visual": {"type": "string", "pattern": "^[0-9a-f]{16}$"}
+          }
+        }
+      }
+    }
+  }
+}

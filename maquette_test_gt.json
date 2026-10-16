@@ -1,0 +1,200 @@
+[
+  {
+    "name": "menu",
+    "bbox": [
+      12,
+      12,
+      27,
+      17
+    ],
+    "kind": "Icône",
+    "text": null
+  },
+  {
+    "name": "titre",
+    "bbox": [
+      151,
+      17,
+      66,
+      11
+    ],
+    "kind": "Texte",
+    "text": "Contacts"
+  },
+  {
+    "name": "recherche",
+    "bbox": [
+      360,
+      10,
+      25,
+      25
+    ],
+    "kind": "Icône",
+    "text": null
+  },
+  {
+    "name": "avatar1",
+    "bbox": [
+      10,
+      60,
+      51,
+      51
+    ],
+    "kind": "Image",
+    "text": null
+  },
+  {
+    "name": "nom1",
+    "bbox": [
+      77,
+      66,
+      104,
+      12
+    ],
+    "kind": "Texte",
+    "text": "Peter Limonez"
+  },
+  {
+    "name": "message1",
+    "bbox": [
+      75,
+      93,
+      254,
+      10
+    ],
+    "kind": "Texte",
+    "text": "The road to success is always under construction"
+  },
+  {
+    "name": "badge1",
+    "bbox": [
+      335,
+      86,
+      51,
+      19
+    ],
+    "kind": "Composant",
+    "text": null
+  },
+  {
+    "name": "badge1_texte",
+    "bbox": [
+      343,
+      92,
+      40,
+      8
+    ],
+    "kind": "Texte",
+    "text": "MOBILE"
+  },
+  {
+    "name": "avatar2",
+    "bbox": [
+      10,
+      130,
+      51,
+      51
+    ],
+    "kind": "Image",
+    "text": null
+  },
+  {
+    "name": "nom2",
+    "bbox": [
+      75,
+      135,
+      87,
+      13
+    ],
+    "kind": "Texte",
+    "text": "Sofia Morell"
+  },
+  {
+    "name": "message2",
+    "bbox": [
+      75,
+      162,
+      201,
+      11
+    ],
+    "kind": "Texte",
+    "text": "My silence is just another word for pain"
+  },
+  {
+    "name": "badge2",
+    "bbox": [
+      335,
+      156,
+      51,
+      19
+    ],
+    "kind": "Composant",
+    "text": null
+  },
+  {
+    "name": "badge2_texte",
+    "bbox": [
+      343,
+      162,
+      40,
+      8
+    ],
+    "kind": "Texte",
+    "text": "MOBILE"
+  },
+  {
+    "name": "avatar3",
+    "bbox": [
+      10,
+      200,
+      51,
+      51
+    ],
+    "kind": "Image",
+    "text": null
+  },
+  {
+    "name": "nom3",
+    "bbox": [
+      75,
+      206,
+      107,
+      12
+    ],
+    "kind": "Texte",
+    "text": "Alan Leonardo"
+  },
+  {
+    "name": "message3",
+    "bbox": [
+      75,
+      232,
+      202,
+      11
+    ],
+    "kind": "Texte",
+    "text": "I am not failed my success is postponed"
+  },
+  {
+    "name": "badge3",
+    "bbox": [
+      335,
+      226,
+      51,
+      19
+    ],
+    "kind": "Composant",
+    "text": null
+  },
+  {
+    "name": "badge3_texte",
+    "bbox": [
+      343,
+      232,
+      40,
+      8
+    ],
+    "kind": "Texte",
+    "text": "MOBILE"
+  }
+]
