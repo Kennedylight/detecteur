@@ -20,9 +20,16 @@ class DetectionConfig:
     solid_fill: float = 0.75
     min_solid_side: int = 14
     edge_margin: int = 2
-    min_palette_ratio: float = 0.7
+    min_palette_ratio: float = 0.85
+    photo_center: float = 0.6
     max_depth: int = 4
     min_line_coverage: float = 0.5
+    halo_max_margin: int = 12
+    thick_max_side: int = 200
+    body_tol: int = 40
+    overlay_max_area: float = 0.25
+    icon_gap: int = 12
+    icon_max_side: int = 48
 
 
 @dataclass(frozen=True)
@@ -38,9 +45,9 @@ class ClassifyConfig:
     contain_overlap: float = 0.9
     icon_max_side: int = 48
     icon_max_aspect: float = 2.0
-    photo_min_side: int = 20
+    photo_min_side: int = 32
     photo_min_colors: int = 16
-    photo_max_palette: float = 0.7
+    photo_max_palette: float = 0.85
     button_min_height: int = 24
     button_max_height: int = 64
     button_max_chars: int = 30
@@ -49,12 +56,18 @@ class ClassifyConfig:
     centered_tol: float = 0.15
     text_min_aspect: float = 2.5
     text_max_height: int = 40
+    line_max_thickness: int = 3
+    photo_center: float = 0.6
+    overlay_max_area: float = 0.25
+    icon_button_max_side: int = 120
+    icon_button_max_aspect: float = 1.3
 
 
 @dataclass(frozen=True)
 class XYCutConfig:
     min_gap: int = 4
     twin_iou: float = 0.9
+    overlay_min_area: int = 100
 
 
 @dataclass(frozen=True)
@@ -62,6 +75,9 @@ class SimilarityConfig:
     min_descendants: int = 2
     max_height_ratio: float = 1.3
     max_width_ratio: float = 2.0
+    approx_min_children: int = 3
+    approx_min_descendants: int = 5
+    approx_max_edits: int = 1
     max_visual_distance: int = 8
     max_size_ratio: float = 1.2
     max_color_distance: int = 40

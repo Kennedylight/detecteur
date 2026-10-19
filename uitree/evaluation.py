@@ -5,6 +5,7 @@ Usage :  python -m uitree.evaluation maquette_test.png maquette_test_gt.json
 import sys
 from dataclasses import dataclass
 
+from uitree.editdistance import levenshtein
 from uitree.geometry import BBox, iou
 
 
@@ -55,17 +56,6 @@ def match_boxes(truth: list[BBox], preds: list[BBox], threshold: float = 0.5) ->
     missed = [i for i in range(len(truth)) if i not in used_t]
     false_pos = [i for i in range(len(preds)) if i not in used_p]
     return Report(sorted(matches, key=lambda m: m.truth_index), missed, false_pos)
-
-
-def levenshtein(a: str, b: str) -> int:
-    """Nombre minimal d'insertions, suppressions, substitutions pour passer de a à b."""
-    prev = list(range(len(b) + 1))
-    for i, ca in enumerate(a, 1):
-        cur = [i]
-        for j, cb in enumerate(b, 1):
-            cur.append(min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (ca != cb)))
-        prev = cur
-    return prev[-1]
 
 
 def text_scores(truth: list[Item], preds: list[Item], report: Report) -> tuple[int, int, float]:

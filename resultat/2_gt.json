@@ -1,0 +1,728 @@
+[
+  {
+    "name": "barre_etat",
+    "bbox": [
+      0,
+      0,
+      575,
+      40
+    ],
+    "kind": "Conteneur",
+    "text": null
+  },
+  {
+    "name": "wifi",
+    "bbox": [
+      393,
+      8,
+      23,
+      24
+    ],
+    "kind": "Icône",
+    "text": null
+  },
+  {
+    "name": "reseau",
+    "bbox": [
+      422,
+      9,
+      22,
+      23
+    ],
+    "kind": "Icône",
+    "text": null
+  },
+  {
+    "name": "batterie_pct",
+    "bbox": [
+      450,
+      16,
+      30,
+      13
+    ],
+    "kind": "Texte",
+    "text": "77%"
+  },
+  {
+    "name": "batterie",
+    "bbox": [
+      480,
+      10,
+      20,
+      23
+    ],
+    "kind": "Icône",
+    "text": null
+  },
+  {
+    "name": "heure",
+    "bbox": [
+      507,
+      8,
+      58,
+      24
+    ],
+    "kind": "Texte",
+    "text": "20:30"
+  },
+  {
+    "name": "barre_app",
+    "bbox": [
+      0,
+      40,
+      575,
+      89
+    ],
+    "kind": "Conteneur",
+    "text": null
+  },
+  {
+    "name": "menu",
+    "bbox": [
+      32,
+      66,
+      48,
+      33
+    ],
+    "kind": "Icône",
+    "text": null
+  },
+  {
+    "name": "titre",
+    "bbox": [
+      211,
+      74,
+      152,
+      20
+    ],
+    "kind": "Texte",
+    "text": "Contacts • 318"
+  },
+  {
+    "name": "recherche",
+    "bbox": [
+      514,
+      72,
+      28,
+      28
+    ],
+    "kind": "Icône",
+    "text": null
+  },
+  {
+    "name": "onglet_appels",
+    "bbox": [
+      59,
+      157,
+      21,
+      21
+    ],
+    "kind": "Icône",
+    "text": null
+  },
+  {
+    "name": "onglet_messages",
+    "bbox": [
+      277,
+      154,
+      30,
+      23
+    ],
+    "kind": "Icône",
+    "text": null
+  },
+  {
+    "name": "onglet_contacts",
+    "bbox": [
+      488,
+      156,
+      35,
+      23
+    ],
+    "kind": "Icône",
+    "text": null
+  },
+  {
+    "name": "onglet_indicateur",
+    "bbox": [
+      503,
+      189,
+      6,
+      5
+    ],
+    "kind": "Composant",
+    "text": null
+  },
+  {
+    "name": "avatar1",
+    "bbox": [
+      31,
+      221,
+      97,
+      96
+    ],
+    "kind": "Image",
+    "text": null
+  },
+  {
+    "name": "pastille1",
+    "bbox": [
+      97,
+      229,
+      26,
+      26
+    ],
+    "kind": "Composant",
+    "text": null
+  },
+  {
+    "name": "pastille1_texte",
+    "bbox": [
+      103,
+      236,
+      14,
+      12
+    ],
+    "kind": "Texte",
+    "text": "15"
+  },
+  {
+    "name": "nom1",
+    "bbox": [
+      145,
+      243,
+      144,
+      16
+    ],
+    "kind": "Texte",
+    "text": "Peter Limonez"
+  },
+  {
+    "name": "message1",
+    "bbox": [
+      147,
+      285,
+      296,
+      15
+    ],
+    "kind": "Texte",
+    "text": "The road to success is always under construction."
+  },
+  {
+    "name": "badge1",
+    "bbox": [
+      501,
+      282,
+      48,
+      22
+    ],
+    "kind": "Composant",
+    "text": null
+  },
+  {
+    "name": "badge1_texte",
+    "bbox": [
+      509,
+      289,
+      32,
+      7
+    ],
+    "kind": "Texte",
+    "text": "MOBILE"
+  },
+  {
+    "name": "avatar2",
+    "bbox": [
+      31,
+      334,
+      97,
+      95
+    ],
+    "kind": "Image",
+    "text": null
+  },
+  {
+    "name": "pastille2",
+    "bbox": [
+      96,
+      340,
+      26,
+      26
+    ],
+    "kind": "Composant",
+    "text": null
+  },
+  {
+    "name": "pastille2_texte",
+    "bbox": [
+      102,
+      347,
+      14,
+      12
+    ],
+    "kind": "Texte",
+    "text": "12"
+  },
+  {
+    "name": "nom2",
+    "bbox": [
+      145,
+      356,
+      118,
+      16
+    ],
+    "kind": "Texte",
+    "text": "Sofia Morell"
+  },
+  {
+    "name": "message2",
+    "bbox": [
+      144,
+      395,
+      293,
+      15
+    ],
+    "kind": "Texte",
+    "text": "My silence/smile is just another word for my pain."
+  },
+  {
+    "name": "badge2",
+    "bbox": [
+      501,
+      392,
+      48,
+      23
+    ],
+    "kind": "Composant",
+    "text": null
+  },
+  {
+    "name": "badge2_texte",
+    "bbox": [
+      509,
+      399,
+      32,
+      9
+    ],
+    "kind": "Texte",
+    "text": "MOBILE"
+  },
+  {
+    "name": "avatar3",
+    "bbox": [
+      31,
+      448,
+      97,
+      95
+    ],
+    "kind": "Image",
+    "text": null
+  },
+  {
+    "name": "pastille3",
+    "bbox": [
+      97,
+      454,
+      26,
+      26
+    ],
+    "kind": "Composant",
+    "text": null
+  },
+  {
+    "name": "pastille3_texte",
+    "bbox": [
+      103,
+      461,
+      14,
+      12
+    ],
+    "kind": "Texte",
+    "text": "24"
+  },
+  {
+    "name": "nom3",
+    "bbox": [
+      144,
+      469,
+      130,
+      18
+    ],
+    "kind": "Texte",
+    "text": "Saarah Laten"
+  },
+  {
+    "name": "message3",
+    "bbox": [
+      145,
+      511,
+      198,
+      13
+    ],
+    "kind": "Texte",
+    "text": "Sometimes It's better to be alone."
+  },
+  {
+    "name": "badge3",
+    "bbox": [
+      501,
+      507,
+      48,
+      25
+    ],
+    "kind": "Composant",
+    "text": null
+  },
+  {
+    "name": "badge3_texte",
+    "bbox": [
+      509,
+      513,
+      32,
+      9
+    ],
+    "kind": "Texte",
+    "text": "MOBILE"
+  },
+  {
+    "name": "avatar4",
+    "bbox": [
+      31,
+      563,
+      97,
+      95
+    ],
+    "kind": "Image",
+    "text": null
+  },
+  {
+    "name": "pastille4",
+    "bbox": [
+      97,
+      569,
+      26,
+      26
+    ],
+    "kind": "Composant",
+    "text": null
+  },
+  {
+    "name": "pastille4_texte",
+    "bbox": [
+      103,
+      576,
+      14,
+      12
+    ],
+    "kind": "Texte",
+    "text": "14"
+  },
+  {
+    "name": "nom4",
+    "bbox": [
+      144,
+      584,
+      147,
+      16
+    ],
+    "kind": "Texte",
+    "text": "Alan Leonardo"
+  },
+  {
+    "name": "message4",
+    "bbox": [
+      145,
+      624,
+      269,
+      16
+    ],
+    "kind": "Texte",
+    "text": "I'm not failed... my success is just postponed."
+  },
+  {
+    "name": "badge4",
+    "bbox": [
+      501,
+      622,
+      48,
+      22
+    ],
+    "kind": "Composant",
+    "text": null
+  },
+  {
+    "name": "badge4_texte",
+    "bbox": [
+      509,
+      625,
+      33,
+      13
+    ],
+    "kind": "Texte",
+    "text": "MOBILE"
+  },
+  {
+    "name": "avatar5",
+    "bbox": [
+      31,
+      675,
+      97,
+      96
+    ],
+    "kind": "Image",
+    "text": null
+  },
+  {
+    "name": "pastille5",
+    "bbox": [
+      97,
+      683,
+      26,
+      26
+    ],
+    "kind": "Composant",
+    "text": null
+  },
+  {
+    "name": "pastille5_texte",
+    "bbox": [
+      103,
+      690,
+      14,
+      12
+    ],
+    "kind": "Texte",
+    "text": "35"
+  },
+  {
+    "name": "nom5",
+    "bbox": [
+      144,
+      699,
+      189,
+      16
+    ],
+    "kind": "Texte",
+    "text": "Alexandra Stevanii"
+  },
+  {
+    "name": "message5",
+    "bbox": [
+      144,
+      740,
+      312,
+      15
+    ],
+    "kind": "Texte",
+    "text": "The only way to do great work is to love what you do."
+  },
+  {
+    "name": "badge5",
+    "bbox": [
+      501,
+      737,
+      48,
+      22
+    ],
+    "kind": "Composant",
+    "text": null
+  },
+  {
+    "name": "badge5_texte",
+    "bbox": [
+      509,
+      744,
+      32,
+      8
+    ],
+    "kind": "Texte",
+    "text": "MOBILE"
+  },
+  {
+    "name": "avatar6",
+    "bbox": [
+      32,
+      791,
+      95,
+      96
+    ],
+    "kind": "Image",
+    "text": null
+  },
+  {
+    "name": "pastille6",
+    "bbox": [
+      96,
+      798,
+      26,
+      26
+    ],
+    "kind": "Composant",
+    "text": null
+  },
+  {
+    "name": "pastille6_texte",
+    "bbox": [
+      102,
+      805,
+      14,
+      12
+    ],
+    "kind": "Texte",
+    "text": "11"
+  },
+  {
+    "name": "nom6",
+    "bbox": [
+      144,
+      815,
+      168,
+      17
+    ],
+    "kind": "Texte",
+    "text": "Soraiea Mertalez"
+  },
+  {
+    "name": "message6",
+    "bbox": [
+      144,
+      856,
+      328,
+      16
+    ],
+    "kind": "Texte",
+    "text": "A journey of a thousand miles begins with a single step."
+  },
+  {
+    "name": "badge6",
+    "bbox": [
+      501,
+      853,
+      48,
+      22
+    ],
+    "kind": "Composant",
+    "text": null
+  },
+  {
+    "name": "badge6_texte",
+    "bbox": [
+      509,
+      859,
+      32,
+      8
+    ],
+    "kind": "Texte",
+    "text": "MOBILE"
+  },
+  {
+    "name": "avatar7",
+    "bbox": [
+      31,
+      907,
+      97,
+      97
+    ],
+    "kind": "Image",
+    "text": null
+  },
+  {
+    "name": "pastille7",
+    "bbox": [
+      96,
+      916,
+      26,
+      26
+    ],
+    "kind": "Composant",
+    "text": null
+  },
+  {
+    "name": "pastille7_texte",
+    "bbox": [
+      102,
+      923,
+      14,
+      12
+    ],
+    "kind": "Texte",
+    "text": "41"
+  },
+  {
+    "name": "nom7",
+    "bbox": [
+      145,
+      927,
+      132,
+      18
+    ],
+    "kind": "Texte",
+    "text": "Lelya Mareen"
+  },
+  {
+    "name": "message7",
+    "bbox": [
+      144,
+      964,
+      294,
+      20
+    ],
+    "kind": "Texte",
+    "text": "Do not give up, the beginning is always the harder."
+  },
+  {
+    "name": "emoji1",
+    "bbox": [
+      448,
+      284,
+      19,
+      19
+    ],
+    "kind": "Icône",
+    "text": null
+  },
+  {
+    "name": "emoji3",
+    "bbox": [
+      352,
+      508,
+      17,
+      20
+    ],
+    "kind": "Icône",
+    "text": null
+  },
+  {
+    "name": "badge7",
+    "bbox": [
+      513,
+      965,
+      35,
+      21
+    ],
+    "kind": "Composant",
+    "text": null
+  },
+  {
+    "name": "bouton_flottant",
+    "bbox": [
+      426,
+      893,
+      101,
+      101
+    ],
+    "kind": "Bouton",
+    "text": null
+  },
+  {
+    "name": "bouton_flottant_icone",
+    "bbox": [
+      462,
+      928,
+      27,
+      29
+    ],
+    "kind": "Icône",
+    "text": null
+  }
+]

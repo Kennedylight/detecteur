@@ -10,7 +10,7 @@ from uitree.similarity import RepeatedComponent, VisualDuplicate
 from uitree.tree import Node
 
 SCHEMA_PATH = Path(__file__).with_name("tree.schema.json")
-SCHEMA_VERSION = "1.0"
+SCHEMA_VERSION = "1.1"
 
 
 def node_to_dict(node: Node) -> dict:
@@ -26,6 +26,7 @@ def node_to_dict(node: Node) -> dict:
         "text": node.text,
         "style": asdict(node.style) if node.style else None,
         "label": node.label,
+        "overlay": node.overlay,
         "score": node.score,
         "hashes": {"structure": node.structure_hash, "visual": node.visual_hash},
     }

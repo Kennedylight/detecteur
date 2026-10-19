@@ -13,6 +13,7 @@ import cv2
 import numpy as np
 
 from uitree.config import SimilarityConfig
+from uitree.editdistance import levenshtein
 from uitree.geometry import BBox
 from uitree.tree import Node
 
@@ -22,6 +23,7 @@ class RepeatedComponent:
     structure_hash: str
     node_ids: list[int]
     max_visual_distance: int        # 0 = identiques à l'œil ; grand = même structure, autre apparence
+    exact: bool                     # False : même composant à une partie optionnelle près (émoji, pastille)
 
 
 @dataclass(frozen=True)
@@ -68,27 +70,64 @@ def _descendants(node: Node) -> int:
 def repeated_components(root: Node, cfg: SimilarityConfig) -> list[RepeatedComponent]:
     """Sous-arbres de même structure et de taille proche, présents au moins 2 fois.
 
+    - EXACTS : même empreinte de structure.
+    - APPROCHÉS (exact = False) : mêmes type et géométrie, et suites de types des enfants à au plus
+      approx_max_edits différences. Sur une vraie capture, les 7 lignes de contact ne sont pas
+      strictement identiques : un émoji sur certaines, une pastille que l'OCR ne lit pas toujours.
+      Pour le DRY, c'est le même composant avec une partie optionnelle.
     Filtres contre les répétitions banales : au moins min_descendants descendants, dont au moins
     un qui n'est pas du texte (deux lignes de texte empilées ne font pas un composant).
-    On ne garde que les répétitions les plus hautes (pas le nom DANS chaque ligne répétée)."""
+    On ne garde que les répétitions les plus hautes (pas le nom DANS chaque ligne répétée), et une
+    répétition exacte comprise dans une approchée n'est pas répétée."""
+    candidates = [n for n in root.walk()
+                  if n.source != "page" and _descendants(n) >= cfg.min_descendants and _has_non_text_part(n)]
     by_hash: dict[str, list[Node]] = defaultdict(list)
-    for node in root.walk():
-        if node.source != "page" and _descendants(node) >= cfg.min_descendants and _has_non_text_leaf(node):
-            by_hash[node.structure_hash].append(node)
-    groups = [(h, g) for h, nodes in by_hash.items()
-              for g in _size_clusters(nodes, cfg) if len(g) >= 2]
-    inside_a_group = {d.id for _, nodes in groups for n in nodes for d in n.walk() if d is not n}
+    for node in candidates:
+        by_hash[node.structure_hash].append(node)
+    exact = [g for nodes in by_hash.values() for g in _size_clusters(nodes, cfg) if len(g) >= 2]
+    approx = [g for g in _approx_clusters(candidates, cfg)
+              if len(g) >= 2 and len({n.structure_hash for n in g}) > 1]
+    exact = [g for g in exact if not any({n.id for n in g} <= {n.id for n in a} for a in approx)]
+    groups = [(g, True) for g in exact] + [(g, False) for g in approx]
+    inside_a_group = {d.id for g, _ in groups for n in g for d in n.walk() if d is not n}
     result = []
-    for h, nodes in groups:
+    for nodes, is_exact in groups:
         if all(n.id in inside_a_group for n in nodes):
             continue
         dist = max(hamming(a.visual_hash, b.visual_hash) for a in nodes for b in nodes)
-        result.append(RepeatedComponent(h, sorted(n.id for n in nodes), dist))
+        common = max(sorted({n.structure_hash for n in nodes}), key=lambda h: sum(n.structure_hash == h for n in nodes))
+        result.append(RepeatedComponent(common, sorted(n.id for n in nodes), dist, is_exact))
     return sorted(result, key=lambda r: r.node_ids[0])
 
 
-def _has_non_text_leaf(node: Node) -> bool:
-    return any(not d.children and d.type not in (None, "Texte") for d in node.walk() if d is not node)
+def _has_non_text_part(node: Node) -> bool:
+    return any(d.type not in (None, "Texte") for d in node.walk() if d is not node)
+
+
+def _child_kinds(node: Node) -> list[str]:
+    return [c.type or c.geo_type for c in node.children]
+
+
+def _approx_clusters(nodes: list[Node], cfg: SimilarityConfig) -> list[list[Node]]:
+    """Regroupement par liaison simple : un nœud rejoint un groupe s'il ressemble à L'UN de ses
+    membres (même type et géométrie, taille proche, enfants à <= approx_max_edits différences).
+    Seulement pour des sous-arbres assez riches (approx_min_descendants) : deux rangées de 3
+    icônes / textes (barre d'application, barre d'onglets) se ressemblent "à un enfant près"
+    sans être le même composant."""
+    clusters: list[list[Node]] = []
+    for n in (n for n in nodes if len(n.children) >= cfg.approx_min_children
+              and _descendants(n) >= cfg.approx_min_descendants):
+        matching = [c for c in clusters if any(_approx_same(m, n, cfg) for m in c)]
+        merged = [n] + [m for c in matching for m in c]
+        clusters = [c for c in clusters if c not in matching] + [merged]
+    return clusters
+
+
+def _approx_same(a: Node, b: Node, cfg: SimilarityConfig) -> bool:
+    return (a.type == b.type and a.geo_type == b.geo_type
+            and _ratio(a.bbox[3], b.bbox[3]) <= cfg.max_height_ratio
+            and _ratio(a.bbox[2], b.bbox[2]) <= cfg.max_width_ratio
+            and levenshtein(_child_kinds(a), _child_kinds(b)) <= cfg.approx_max_edits)
 
 
 def _size_clusters(nodes: list[Node], cfg: SimilarityConfig) -> list[list[Node]]:

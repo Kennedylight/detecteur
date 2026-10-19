@@ -517,3 +517,77 @@ Aucun de ces points n'est chiffré : il faut une vérité terrain (onglet « Vé
    barres de progression, selon les chiffres).
 3. Plus tard : classifieur appris à la place des règles (l'interface `ElementClassifier` est prête),
    puis étiquetage sémantique par un MLLM (champ `label`), sans toucher aux positions.
+
+---------------------------------------------------------------------------------------------------
+
+## 16. Corrections après la première vraie capture annotée (« Contacts », `resultat/2.jpg`)
+
+L'utilisateur a testé l'outil sur sa propre capture (575×1022, JPEG) : l'écran réel dont la
+maquette de test était inspirée, avec photos, ombres douces et un bouton flottant. Constat :
+boutons et images dans les cartes mal détectés.
+
+### 16.1 Vérité terrain
+
+66 éléments, construits par seuillage local (indépendant du détecteur), cercles de Hough pour les
+avatars et pastilles, masque de couleur pour les badges, puis **vérifiés à l'œil** sur un rendu.
+Faite par l'assistant, pas par un humain : à confirmer. Décision de cohérence : le badge « MOBILE »
+est un **Composant** (étiquette), comme sur la maquette (et non un Bouton).
+
+### 16.2 Diagnostic (lu dans l'arbre produit)
+
+| Symptôme | Cause |
+|---|---|
+| Badge « MOBILE » emboîté 3 fois (60×36 ⊃ 55×31 ⊃ 50×26) | l'ombre douce est vue comme des surfaces successives |
+| Texte du badge invisible | la couleur majoritaire du badge réel est le blanc-vert (texte + ombre), pas le vert |
+| Avatars typés Composant / Conteneur | test « photo » fait sur toute la boîte (coins blancs + anneau) ; pastille posée dessus |
+| Bouton flottant = grand Conteneur, 2 lignes fusionnées | il touche le badge de la dernière ligne ; il est posé PAR-DESSUS ; pas de règle « bouton icône » |
+| « Contacts • 318 » détecté deux fois | texte gras avec halo vu comme une surface, puis relu dedans |
+| Aucune ligne reconnue comme répétée | conséquence des points précédents + émoji présent sur certaines lignes seulement |
+
+### 16.3 Corrections (chacune mesurée, chacune testée)
+
+| Correction | Où |
+|---|---|
+| Couleur d'une surface = majoritaire parmi les pixels nettement différents du fond extérieur | `detection._surface_color` |
+| Boîte resserrée sur le corps ; bord retiré seulement s'il est plus proche du fond que du corps (ombre), jamais une bordure nette ; ombre mesurée 9 px → `halo_max_margin` = 12 | `detection._body_box` |
+| Halo : surface qui contient UN élément à ≤ 12 px des 4 bords → seul l'élément est gardé | `detection._is_halo` |
+| Restes d'ombre pâles collés à une surface retirés de l'encre | `detection._drop_shadows` |
+| Dans une surface, l'encre qui touche le bord (ombrage du bord) est ignorée | `detection._drop_edge_ink` |
+| « Surface » couverte par une ligne OCR et pas plus haute qu'elle = du texte | `detection._is_text_shape` |
+| Un morceau plus haut que 1,5× la ligne OCR (anneau d'ombre) ne rejoint pas le texte ; boîte OCR élargie de 3 px pour les jambages coupés | `detection._extract_text_lines` |
+| Formes collées ≤ 200 px (bouton rond sur un badge) : ouverture par un disque de la moitié du petit côté, petits trous bouchés avant | `detection._thick_parts` |
+| Morceaux d'une même icône (menu « hamburger ») réunis | `detection._merge_icon_fragments` |
+| Dans une photo, on ne garde que ce qui porte du texte (pastille) | `detection._photo_overlays` |
+| Photo testée au centre (60 %) avec seuil 0,85 — **mesuré** : photos d'avatars 0,30-0,77, interface 0,91-0,96 ; même règle pour la détection et le typage | `colors.center_crop`, `classify`, `detection` |
+| Règles : photo avec petits éléments posés dessus = Image ; forme presque carrée avec une seule icône = Bouton (bouton icône) ; trait ≤ 3 px = Composant ; Image ≥ 32 px | `classify` |
+| Éléments posés par-dessus leurs frères retirés de XY-Cut, marqués `overlay: true` (position absolue) | `tree._split_overlays`, schéma 1.1 |
+| Répétitions approchées (`exact: false`) : mêmes type et géométrie, enfants à ≤ 1 différence, ≥ 5 descendants ; filtre « non-texte » sur tous les descendants (bug : seulement les feuilles) | `similarity` |
+| Distance d'édition partagée (textes et suites de types) | `editdistance.py` |
+
+Deux régressions trouvées et corrigées en route : la « troisième chance » appliquée à un grand
+bloc (8 écrans reliés par leurs ombres) masquait tout (181 éléments au lieu de 286, 15 s) → limitée
+aux formes ≤ 200 px ; boucher les trous d'un cadre en faisait un rectangle géant → seuls les petits
+trous (< 30 %) sont bouchés.
+
+### 16.4 Résultats sur la capture (vérité terrain de 66 éléments)
+
+| | Avant | Après |
+|---|---|---|
+| Rappel | 48/66 = 0,73 | **52/66 = 0,79** |
+| Précision | 48/84 = 0,57 | **52/56 = 0,93** |
+| Types corrects (appariés) | 31/48 = 65 % | **49/52 = 94 %** |
+| Texte | 20/21, CER 0,2 % | 24/25, CER 0,2 % |
+| Lignes de contact reconnues comme un composant | 0 | **les 7** (répétition approchée) |
+| Badges « MOBILE » identiques | — | **6** |
+
+Maquettes inchangées (18/18 et 20/20, types 100 %). Tests : **99 réussis, 1 échec attendu**.
+
+### 16.5 Limites restantes
+
+- **Pastilles « 15 », « 12 », « 11 »** : l'OCR ne lit pas ces chiffres, donc la règle « garder ce
+  qui porte du texte » ne les voit pas ; et même lues, la pastille autour n'est pas toujours
+  retrouvée. **10 des 14 éléments encore ratés** sont des pastilles ou leur chiffre.
+- **Barre d'état** : icônes Wi-Fi et réseau fusionnées, batterie mal délimitée (3 ratés).
+- Petit **indicateur d'onglet** (6×5 px) non détecté.
+- Un groupe approché discutable sur DASHBOARD (une carte de statistiques et une carte « Pending »).
+- La vérité terrain a été faite par l'assistant ; une vérification humaine reste à faire.

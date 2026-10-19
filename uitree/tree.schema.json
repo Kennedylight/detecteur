@@ -6,7 +6,7 @@
   "required": ["schema_version", "image", "root", "repeated_components", "visual_duplicates"],
   "additionalProperties": false,
   "properties": {
-    "schema_version": {"const": "1.0"},
+    "schema_version": {"const": "1.1"},
     "image": {
       "type": "object",
       "required": ["file", "width", "height"],
@@ -23,12 +23,13 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["structure_hash", "node_ids", "max_visual_distance"],
+        "required": ["structure_hash", "node_ids", "max_visual_distance", "exact"],
         "additionalProperties": false,
         "properties": {
           "structure_hash": {"type": "string", "pattern": "^[0-9a-f]{12}$"},
           "node_ids": {"type": "array", "items": {"type": "integer"}, "minItems": 2},
-          "max_visual_distance": {"type": "integer", "minimum": 0, "maximum": 64}
+          "max_visual_distance": {"type": "integer", "minimum": 0, "maximum": 64},
+          "exact": {"description": "false : même composant à une partie optionnelle près", "type": "boolean"}
         }
       }
     },
@@ -48,7 +49,7 @@
     "node": {
       "type": "object",
       "required": ["id", "bbox", "type", "geo_type", "source", "parent", "children", "text", "style",
-                   "label", "score", "hashes"],
+                   "label", "overlay", "score", "hashes"],
       "additionalProperties": false,
       "properties": {
         "id": {"type": "integer", "minimum": 0},
@@ -90,6 +91,10 @@
         "label": {
           "description": "Étiquette sémantique, remplie plus tard par le MLLM (qui ne touche jamais aux positions).",
           "type": ["string", "null"]
+        },
+        "overlay": {
+          "description": "Posé par-dessus ses frères (bouton flottant) : hors du Row/Column, position absolue.",
+          "type": "boolean"
         },
         "score": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
         "hashes": {

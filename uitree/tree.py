@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 
 from uitree.config import Config
 from uitree.detection import Detection
-from uitree.geometry import BBox, iou
+from uitree.geometry import BBox, iou, overlap_ratio
 from uitree.hierarchy import children_of, find_parents
 from uitree.style import Style
 from uitree.xycut import COLUMN, LEAF, Cut, xy_cut
@@ -31,6 +31,7 @@ class Node:
     id: int = -1
     parent: int | None = None
     label: str | None = None         # étiquette sémantique : remplie plus tard par le MLLM
+    overlay: bool = False            # posé PAR-DESSUS ses frères (bouton flottant) : hors du Row/Column
     structure_hash: str = ""         # voir similarity.py
     visual_hash: str = ""
 
@@ -44,7 +45,8 @@ def build_tree(dets: Sequence[Detection], size: tuple[int, int], cfg: Config) ->
     """size = (largeur, hauteur) de l'image."""
     parents = find_parents([d.bbox for d in dets], [d.source != "text" for d in dets],
                            cfg.classify.contain_overlap)
-    builder = _Builder(dets, children_of(parents), cfg.xycut.min_gap, cfg.xycut.twin_iou)
+    builder = _Builder(dets, children_of(parents), cfg.xycut.min_gap, cfg.xycut.twin_iou,
+                       cfg.xycut.overlay_min_area)
     roots = [i for i, p in enumerate(parents) if p is None]
     root = Node((0, 0, size[0], size[1]), None, COLUMN, "page")
     builder.arrange(root, roots)
@@ -58,6 +60,7 @@ class _Builder:
     kids: list[list[int]]
     min_gap: int
     twin_iou: float
+    overlay_min_area: int
 
     def arrange(self, node: Node, indices: list[int]) -> None:
         """Range des détections DANS node : le premier niveau de XY-Cut donne son geo_type."""
@@ -65,12 +68,44 @@ class _Builder:
         if not indices:
             node.geo_type = LEAF if node.source == "detection" else node.geo_type
             return
-        cut = xy_cut([self.dets[i].bbox for i in indices], self.min_gap)
-        cut = _reindex(cut, indices)
+        flow, floating = self._split_overlays(indices)
+        cut = xy_cut([self.dets[i].bbox for i in flow], self.min_gap)
+        cut = _reindex(cut, flow)
         if cut.geo_type == LEAF:                       # un seul enfant : on l'empile
             node.geo_type, node.children = COLUMN, [self.convert(cut)]
         else:
             node.geo_type, node.children = cut.geo_type, [self.convert(c) for c in cut.children]
+        for i in floating:
+            child = self.convert(Cut(LEAF, i))
+            child.overlay = True
+            node.children.append(child)
+
+    def _split_overlays(self, indices: list[int]) -> tuple[list[int], list[int]]:
+        """Éléments posés PAR-DESSUS leurs frères (bouton flottant sur la dernière ligne) : XY-Cut
+        ne peut pas les séparer (ils faisaient un "Groupe" qui mélangeait deux lignes). On retire
+        tant qu'il en reste l'élément non-texte qui en chevauche le plus d'autres ; il est rangé
+        à part (overlay = position absolue pour le générateur de code)."""
+        flow, floating = list(indices), []
+        while len(flow) > 1:
+            counts = {i: sum(self._overlap(i, j) for j in flow if j != i)
+                      for i in flow if self.dets[i].source != "text"}
+            if not counts or max(counts.values()) == 0:
+                break
+            worst = max(counts, key=lambda i: (counts[i], self._area(i), -i))
+            flow.remove(worst)
+            floating.append(worst)
+        return flow, sorted(floating, key=lambda i: (self.dets[i].bbox[1], self.dets[i].bbox[0]))
+
+    def _overlap(self, i: int, j: int) -> bool:
+        """Vrai chevauchement (pas une inclusion, pas une bande de 1-2 px due au bruit)."""
+        a, b = self.dets[i].bbox, self.dets[j].bbox
+        ix = min(a[0] + a[2], b[0] + b[2]) - max(a[0], b[0])
+        iy = min(a[1] + a[3], b[1] + b[3]) - max(a[1], b[1])
+        return (min(ix, iy) >= 5 and ix * iy >= self.overlay_min_area
+                and overlap_ratio(a, b) < 0.9 and overlap_ratio(b, a) < 0.9)
+
+    def _area(self, i: int) -> int:
+        return self.dets[i].bbox[2] * self.dets[i].bbox[3]
 
     def _without_twins(self, bbox: BBox, indices: list[int]) -> list[int]:
         """Un enfant non-texte qui recouvre presque tout son parent (même tuile détectée par son

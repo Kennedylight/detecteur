@@ -13,7 +13,7 @@ from typing import Protocol
 
 import numpy as np
 
-from uitree.colors import count_colors, palette_ratio
+from uitree.colors import center_crop, count_colors, palette_ratio
 from uitree.config import ClassifyConfig
 from uitree.detection import Detection
 from uitree.geometry import BBox
@@ -55,10 +55,14 @@ class RuleClassifier:
             return Classification(TEXT, d.score, "ligne lue par l'OCR")
         x, y, w, h = d.bbox
         crop = img[y:y + h, x:x + w]
-        if not children and self._is_photo(crop):
+        if not children and (self._is_photo(crop) or self._is_photo(self._center(crop))):
             return Classification(IMAGE, 0.6, "beaucoup de couleurs, pas d'aplats")
+        if children and self._is_photo_with_overlays(crop, d.bbox, children):
+            return Classification(IMAGE, 0.5, "photo au centre, petits éléments posés dessus")
         if children:
             return self._classify_shape_with_content(d, children)
+        if min(w, h) <= self.cfg.line_max_thickness:
+            return Classification(COMPONENT, 0.5, "trait fin (séparateur)")
         if self._is_small_square(w, h):
             return Classification(ICON, 0.6, "petite forme presque carrée, sans contenu")
         if d.source == "ink" and self._looks_like_unread_text(w, h, d.fill):
@@ -72,6 +76,8 @@ class RuleClassifier:
         texts = [c for c, k in children if k.kind == TEXT]
         others = [k.kind for c, k in children if k.kind != TEXT]
         x, y, w, h = d.bbox
+        if not texts and others == [ICON] and self._is_icon_button(d):
+            return Classification(BUTTON, 0.5, "forme pleine presque carrée avec une seule icône (bouton icône)")
         if len(texts) != 1 or len(others) > 1 or any(k != ICON for k in others):
             return Classification(CONTAINER, 0.5, "contient plusieurs éléments")
         if h < self.cfg.button_min_height:
@@ -87,6 +93,24 @@ class RuleClassifier:
             return False
         return (count_colors(crop) >= self.cfg.photo_min_colors
                 and palette_ratio(crop) < self.cfg.photo_max_palette)
+
+    def _is_photo_with_overlays(self, crop: np.ndarray, box: BBox,
+                                children: list[tuple[Detection, Classification]]) -> bool:
+        """Avatar avec une pastille "15" posée dessus : la photo est au CENTRE (les coins d'un
+        avatar rond sont du fond uni, qui faussait la mesure sur toute la boîte), et les enfants
+        sont petits par rapport à elle."""
+        area = box[2] * box[3]
+        if any(c.bbox[2] * c.bbox[3] > self.cfg.overlay_max_area * area for c, _ in children):
+            return False
+        return self._is_photo(self._center(crop))
+
+    def _center(self, crop: np.ndarray) -> np.ndarray:
+        return center_crop(crop, self.cfg.photo_center)
+
+    def _is_icon_button(self, d: Detection) -> bool:
+        w, h = d.bbox[2], d.bbox[3]
+        return (d.source == "surface" and max(w, h) / max(1, min(w, h)) <= self.cfg.icon_button_max_aspect
+                and self.cfg.button_min_height <= min(w, h) and max(w, h) <= self.cfg.icon_button_max_side)
 
     def _is_small_square(self, w: int, h: int) -> bool:
         return max(w, h) <= self.cfg.icon_max_side and max(w, h) / max(1, min(w, h)) <= self.cfg.icon_max_aspect

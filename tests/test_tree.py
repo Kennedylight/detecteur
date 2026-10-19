@@ -122,7 +122,7 @@ def _walk(node):
     (lambda d: d["root"].__setitem__("type", "Bidule"), "Schéma"),
     (lambda d: d["root"].pop("label"), "Schéma"),
     (lambda d: d["repeated_components"].append(
-        {"structure_hash": "0" * 12, "node_ids": [1, 999], "max_visual_distance": 0}), "inconnus"),
+        {"structure_hash": "0" * 12, "node_ids": [1, 999], "max_visual_distance": 0, "exact": True}), "inconnus"),
 ])
 def test_validation_detecte_les_corruptions(contacts, corrupt, message):
     doc = copy.deepcopy(contacts.document)
